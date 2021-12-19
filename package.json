@@ -1,0 +1,19 @@
+{
+  "name": "react-native-image-light-gallery",
+  "version": "0.0.1",
+  "description": "A react native image viewer components.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MonsterAnan/react-native-image-light-gallery.git"
+  },
+  "author": "Toa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MonsterAnan/react-native-image-light-gallery/issues"
+  },
+  "homepage": "https://github.com/MonsterAnan/react-native-image-light-gallery#readme"
+}
