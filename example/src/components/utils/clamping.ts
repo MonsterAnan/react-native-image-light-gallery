@@ -1,11 +1,11 @@
 export const clamp = (value: number, min: number, max: number) => {
-  'worklet';
+  "worklet";
 
   return Math.max(Math.min(value, max), min);
 };
 
 export const rubberBandClamp = (x: number, coeff: number, dim: number) => {
-  'worklet';
+  "worklet";
 
   return (1.0 - 1.0 / ((x * coeff) / dim + 1.0)) * dim;
 };
@@ -16,7 +16,7 @@ export const withRubberBandClamp = (
   dim: number,
   limits: [number, number]
 ) => {
-  'worklet';
+  "worklet";
   let clampedX = clamp(x, limits[0], limits[1]);
   let diff = Math.abs(x - clampedX);
   let sign = clampedX > x ? -1 : 1;

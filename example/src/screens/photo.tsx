@@ -45,6 +45,7 @@ export const Photos = () => {
         initialIndex={params.index}
         onIndexChange={onIndexChange}
         onSwipeToClose={goBack}
+        onTap={goBack}
       />
     </View>
   );

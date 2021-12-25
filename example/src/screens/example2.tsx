@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 import { RootParamList } from "../../App";
-const images = Array.from({ length: 30 }, (_, index) => {
+const images = Array.from({ length: 3 }, (_, index) => {
   return {
     uri: `https://picsum.photos/id/${index + 10}/400/400`,
     width: Dimensions.get("window").width,
