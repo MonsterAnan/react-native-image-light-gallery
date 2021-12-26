@@ -1,5 +1,5 @@
-import { useHeaderHeight } from "@react-navigation/elements";
-import React, { RefObject, useEffect, useState } from "react";
+import { useHeaderHeight } from '@react-navigation/elements';
+import React, { RefObject, useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -7,13 +7,13 @@ import {
   StatusBar,
   StyleSheet,
   View,
-} from "react-native";
+} from 'react-native';
 import {
   PanGestureHandler,
   ScrollView,
   TapGestureHandler,
   TapGestureHandlerGestureEvent,
-} from "react-native-gesture-handler";
+} from 'react-native-gesture-handler';
 import Animated, {
   Easing,
   Extrapolate,
@@ -25,11 +25,11 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
-} from "react-native-reanimated";
+} from 'react-native-reanimated';
 
 const AnimatedImage = Animated.createAnimatedComponent(Image);
 
-const dimensions = Dimensions.get("window");
+const dimensions = Dimensions.get('window');
 const GUTTER_WIDTH = 3;
 const NUMBER_OF_IMAGES = 4;
 const IMAGE_SIZE =
@@ -56,7 +56,7 @@ type ActiveExampleImage = ActiveExampleImageProperties & {
 type onItemPressFn = <T>(
   animatedRef: RefObject<T>,
   item: ExampleImage,
-  svs: ActiveExampleImageProperties
+  svs: ActiveExampleImageProperties,
 ) => void;
 function ImageList({
   images,
@@ -81,6 +81,7 @@ type ListItemProps = {
 };
 function ListItem({ item, index, onPress }: ListItemProps) {
   // @ts-ignore: FIXME(TS) correct type for createAnimatedComponent
+  // eslint-disable-next-line no-undef
   const ref = useAnimatedRef<AnimatedImage>();
   const opacity = useSharedValue(1);
   const headerHeight = useHeaderHeight();
@@ -162,14 +163,14 @@ function ImageTransition({
 
   const targetX = useSharedValue(0);
   const targetY = useSharedValue(
-    (dimensions.height - targetHeight) / 2 - headerHeight
+    (dimensions.height - targetHeight) / 2 - headerHeight,
   );
 
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
 
   const onPan = useAnimatedGestureHandler({
-    onActive: (event) => {
+    onActive: event => {
       translateX.value = event.translationX;
       translateY.value = event.translationY;
 
@@ -177,14 +178,14 @@ function ImageTransition({
         translateY.value,
         [-200, 0, 200],
         [0.65, 1, 0.65],
-        Extrapolate.CLAMP
+        Extrapolate.CLAMP,
       );
 
       backdropOpacity.value = interpolate(
         translateY.value,
         [-100, 0, 100],
         [0, 1, 0],
-        Extrapolate.CLAMP
+        Extrapolate.CLAMP,
       );
     },
 
@@ -204,7 +205,7 @@ function ImageTransition({
             },
             () => {
               runOnJS(onClose)();
-            }
+            },
           );
         });
 
@@ -228,7 +229,7 @@ function ImageTransition({
     const left =
       translateX.value + interpolateProgress([x.value, targetX.value]);
     return {
-      position: "absolute",
+      position: 'absolute',
       top,
       left,
       width: interpolateProgress([width.value, targetWidth]),
@@ -255,6 +256,7 @@ function ImageTransition({
 
     animationProgress.value = withTiming(1, timingConfig);
     backdropOpacity.value = withTiming(1, timingConfig);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -280,14 +282,15 @@ const images: ExampleImage[] = Array.from({ length: 30 }, (_, index) => {
 
 export function Example(): React.ReactElement {
   const [activeImage, setActiveImage] = useState<ActiveExampleImage | null>(
-    null
+    null,
   );
 
   function onItemPress(
     // @ts-ignore: FIXME AnimatedImage type
+    // eslint-disable-next-line no-undef
     animatedRef: RefObject<AnimatedImage>,
     item: ExampleImage,
-    svs: ActiveExampleImageProperties
+    svs: ActiveExampleImageProperties,
   ) {
     setActiveImage({
       animatedRef,
@@ -302,7 +305,7 @@ export function Example(): React.ReactElement {
 
   const headerHeight = useHeaderHeight() - (StatusBar.currentHeight ?? 0);
   const height =
-    Platform.OS === "web" ? dimensions.height - headerHeight : undefined;
+    Platform.OS === 'web' ? dimensions.height - headerHeight : undefined;
 
   return (
     <View style={[styles.container, { height }]}>
@@ -317,16 +320,16 @@ export function Example(): React.ReactElement {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 0,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
 
   scrollContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
 
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "black",
+    backgroundColor: 'black',
   },
 });

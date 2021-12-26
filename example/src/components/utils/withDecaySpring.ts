@@ -1,16 +1,13 @@
-import {
-  defineAnimation,
-  WithDecayConfig,
-  WithSpringConfig,
-} from "react-native-reanimated";
+import Animated, { defineAnimation } from 'react-native-reanimated';
 
 export function withDecaySpring(
-  userConfig: WithDecayConfig & WithSpringConfig & { clamp: [number, number] }
+  userConfig: Animated.WithDecayConfig &
+    Animated.WithSpringConfig & { clamp: [number, number] }
 ) {
-  "worklet";
+  'worklet';
 
   return defineAnimation(0, () => {
-    "worklet";
+    'worklet';
     const config = {
       deceleration: 0.997,
       // SPRING CONFIG
