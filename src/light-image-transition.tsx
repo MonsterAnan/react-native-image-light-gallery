@@ -147,7 +147,11 @@ export const ImageTransition = ({
   return (
     <View style={StyleSheet.absoluteFillObject}>
       <Animated.View style={[styles.backdrop, backdropStyles]} />
-      <PanGestureHandler onGestureEvent={onPan}>
+      <PanGestureHandler
+        onGestureEvent={onPan}
+        minDist={10}
+        minPointers={1}
+        maxPointers={1}>
         <Animated.View style={StyleSheet.absoluteFillObject}>
           <AnimatedImage source={{ uri }} style={imageStyles} />
         </Animated.View>

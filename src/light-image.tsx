@@ -36,7 +36,7 @@ export type LightImageProps = {
   height: number;
 };
 export type LightImageItemProps = {
-  item: LightImageProps;
+  targetImgInfo: LightImageProps;
   onPress: onLightImagePressFn;
   imgWidth: number;
   imgHeight: number;
@@ -44,7 +44,7 @@ export type LightImageItemProps = {
 };
 
 export const LightImage = ({
-  item,
+  targetImgInfo,
   onPress,
   imgWidth,
   imgHeight,
@@ -67,7 +67,7 @@ export const LightImage = ({
   const y = useSharedValue(0);
 
   const handlePress = () => {
-    onPress(ref, item, { imageOpacity: opacity, width, height, x, y });
+    onPress(ref, targetImgInfo, { imageOpacity: opacity, width, height, x, y });
   };
 
   const handler = useAnimatedGestureHandler<TapGestureHandlerGestureEvent>({
@@ -75,7 +75,9 @@ export const LightImage = ({
       if (isCanceledOrFailed) {
         return;
       }
+
       const measurements = measure(ref);
+
       width.value = measurements.width;
       height.value = measurements.height;
       x.value = measurements.pageX;
@@ -88,7 +90,11 @@ export const LightImage = ({
   return (
     <TapGestureHandler onGestureEvent={handler}>
       <Animated.View style={containerStyle}>
-        <AnimatedImage ref={ref} source={{ uri: item.uri }} style={styles} />
+        <AnimatedImage
+          ref={ref}
+          source={{ uri: targetImgInfo.uri }}
+          style={styles}
+        />
       </Animated.View>
     </TapGestureHandler>
   );

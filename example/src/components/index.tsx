@@ -833,35 +833,30 @@ const ResizableImage = React.memo(
         onGestureEvent={panHandler}
         minDist={10}
         minPointers={1}
-        maxPointers={1}
-      >
+        maxPointers={1}>
         <Animated.View style={[{ width, height }]}>
           <PinchGestureHandler
             ref={pinch}
             simultaneousHandlers={[pan]}
             onGestureEvent={gestureHandler}
-            minPointers={2}
-          >
+            minPointers={2}>
             <Animated.View style={{ width, height }}>
               <LongPressGestureHandler
                 onHandlerStateChange={longPressGesturehandler}
-                maxDist={0}
-              >
+                maxDist={0}>
                 <Animated.View style={{ width, height }}>
                   <TapGestureHandler
                     ref={doubleTap}
                     onGestureEvent={singleTapHandler}
                     waitFor={tap}
                     maxDeltaX={10}
-                    maxDeltaY={10}
-                  >
+                    maxDeltaY={10}>
                     <Animated.View style={[{ width, height }, animatedStyle]}>
                       <TapGestureHandler
                         ref={tap}
                         onGestureEvent={doubleTapHandler}
                         numberOfTaps={2}
-                        maxDelayMs={doubleTapInterval}
-                      >
+                        maxDelayMs={doubleTapInterval}>
                         <Animated.View style={{ width, height }}>
                           {renderItem(itemProps)}
                         </Animated.View>
@@ -1024,8 +1019,7 @@ const GalleryComponent = <T extends any>(
                 dimensions,
                 isFirst ? {} : { marginLeft: emptySpaceWidth },
                 { zIndex: index === i ? 1 : 0 },
-              ]}
-            >
+              ]}>
               {hidden ? null : (
                 // @ts-ignore
                 <ResizableImage

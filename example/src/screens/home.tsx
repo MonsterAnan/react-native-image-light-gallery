@@ -51,9 +51,9 @@ export const Home = () => {
         </TouchableOpacity>
         <LightImage
           onPress={onPress}
-          item={{
-            width: 375,
-            height: 1000,
+          targetImgInfo={{
+            width: 120,
+            height: 120,
             uri: 'https://picsum.photos/id/1/400/400',
           }}
           imgWidth={120}
