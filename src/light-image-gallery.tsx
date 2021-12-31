@@ -1,18 +1,10 @@
-import { useHeaderHeight } from '@react-navigation/elements';
-import React, { RefObject, useEffect, useState } from 'react';
-import { ViewStyle } from 'react-native';
-import { Image, StyleSheet, useWindowDimensions, View } from 'react-native';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, useWindowDimensions, View, ViewStyle } from 'react-native';
 import Animated, {
-  Easing,
-  Extrapolate,
-  interpolate,
-  runOnJS,
-  useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
 } from 'react-native-reanimated';
+import { ImageTransition } from './light-image-transition';
 
 type EventsCallbacks = {
   onSwipeToClose?: () => void;
@@ -97,6 +89,9 @@ export const LightImageGallery = <T extends any>({
   return (
     <View style={StyleSheet.absoluteFillObject}>
       <Animated.View style={[styles.backdrop, backdropStyles]} />
+      {data.map((item: any) => {
+        return <ImageTransition activeImage={item.activeImage} />;
+      })}
     </View>
   );
 };
