@@ -6,6 +6,7 @@ import Animated, {
   Easing,
   Extrapolate,
   interpolate,
+  runOnJS,
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
@@ -26,8 +27,10 @@ const timingConfig = {
 };
 export const ImageTransition = ({
   activeImage,
+  onClose,
 }: {
   activeImage: ActiveImageType;
+  onClose: () => void;
 }) => {
   const { item, x, y, width, height, imageOpacity } = activeImage;
   const { uri } = item;
@@ -87,7 +90,7 @@ export const ImageTransition = ({
               duration: 16,
             },
             () => {
-              // runOnJS(onClose)();
+              runOnJS(onClose)();
             },
           );
         });
