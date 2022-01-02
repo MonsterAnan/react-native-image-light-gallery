@@ -15,22 +15,20 @@ import {
   LightImage,
   LightImageProperties,
   LightImageProps,
-  ImageTransition,
   LightImageGallery,
-  LightImageItemProps,
 } from 'react-native-image-light-gallery';
 import { RootParamList } from '../../App';
 
 const image: LightImageProps[] = [
   {
-    width: 120,
-    height: 120,
-    uri: 'https://picsum.photos/id/1/400/400',
+    width: 0,
+    height: 0,
+    uri: 'https://picsum.photos/id/1/900/700',
   },
   {
-    width: 120,
-    height: 120,
-    uri: 'https://picsum.photos/id/2/400/400',
+    width: 0,
+    height: 0,
+    uri: 'https://picsum.photos/id/3/400/400',
   },
 ];
 export const Home = () => {
@@ -67,6 +65,7 @@ export const Home = () => {
             onPress={() => navigate.navigate('example2')}>
             <Text>Example2</Text>
           </TouchableOpacity>
+
           <LightImage
             onPress={onPress}
             targetImgInfo={{
@@ -82,12 +81,15 @@ export const Home = () => {
           <LightImageGallery
             data={image}
             onTap={onClose}
-            renderItem={item => (
-              <Image
-                source={{ uri: item.uri }}
-                style={{ width: 375, height: 375 }}
-              />
-            )}
+            renderItem={({ item }) => {
+              return (
+                <Image
+                  source={{ uri: item.uri }}
+                  style={[StyleSheet.absoluteFillObject]}
+                  resizeMode="contain"
+                />
+              );
+            }}
           />
         )}
       </View>

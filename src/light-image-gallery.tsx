@@ -1,29 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Image } from 'react-native';
 import { StyleSheet, useWindowDimensions, View, ViewStyle } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
   runOnJS,
-  useAnimatedGestureHandler,
+  useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { ImageTransition } from './light-image-transition';
-import {
-  LightImageItemProps,
-  LightImageProps,
-  LightImageItem,
-  RenderItem,
-} from './';
-import { PanGestureHandler } from 'react-native-gesture-handler';
-import { useRefs } from './hooks/useRefs';
+import { LightImageItem, RenderItem, ItemRef } from './';
 import { useRef } from 'react';
-import { TapGestureHandler } from 'react-native-gesture-handler';
-import { GestureEvent } from 'react-native-gesture-handler';
-import { TapGestureHandlerEventPayload } from 'react-native-gesture-handler';
-import { PinchGestureHandler } from 'react-native-gesture-handler';
+import { useCallback } from 'react';
 const timingConfig = {
   duration: 240,
   easing: Easing.bezier(0.33, 0.01, 0, 1),
@@ -56,7 +43,7 @@ export type GalleryReactRef = React.Ref<GalleryRef>;
 type LightImageGalleryProps<T> = EventsCallbacks & {
   ref?: GalleryReactRef;
   data: T[];
-  renderItem?: RenderItem<T>;
+  renderItem: RenderItem<T>;
   keyExtractor?: (item: T, index: number) => string | number;
   initialIndex?: number;
   onIndexChange?: (index: number) => void;
@@ -82,6 +69,18 @@ export const LightImageGallery = <T extends any>({
   data,
   containerDimensions,
   keyExtractor,
+  loop = false,
+  doubleTapInterval = 500,
+  doubleTapScale = 2,
+  maxScale = 6,
+  pinchEnabled = true,
+  disableTransitionOnScaledImage = false,
+  hideAdjacentImagesOnScaledImage = false,
+  renderItem,
+  disableVerticalSwipe = false,
+  disableSwipeUp = false,
+  onIndexChange,
+  numToRender = 5,
   ...rest
 }: LightImageGalleryProps<T>) => {
   const windowDimensions = useWindowDimensions();
@@ -89,7 +88,12 @@ export const LightImageGallery = <T extends any>({
   const [index, setIndex] = useState(initialIndex);
   const backdropOpacity = useSharedValue(0);
   const animationProgress = useSharedValue(0);
+  const isLoop = loop && data?.length > 1;
+  const refs = useRef<ItemRef[]>([]);
 
+  const setRef = useCallback((i: number, value: ItemRef) => {
+    refs.current[i] = value;
+  }, []);
   const currentIndex = useSharedValue(initialIndex);
   const translateX = useSharedValue(
     initialIndex * -(dimensions.width + emptySpaceWidth),
@@ -99,6 +103,22 @@ export const LightImageGallery = <T extends any>({
       opacity: backdropOpacity.value,
     };
   });
+  const changeIndex = useCallback(
+    newIndex => {
+      onIndexChange?.(newIndex);
+      setIndex(newIndex);
+    },
+    [onIndexChange, setIndex],
+  );
+  useAnimatedReaction(
+    () => currentIndex.value,
+    newIndex => runOnJS(changeIndex)(newIndex),
+    [currentIndex, changeIndex],
+  );
+  useEffect(() => {
+    translateX.value = index * -(dimensions.width + emptySpaceWidth);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [windowDimensions]);
 
   useEffect(() => {
     if (index >= data.length) {
@@ -111,35 +131,78 @@ export const LightImageGallery = <T extends any>({
     backdropOpacity.value = withTiming(1, timingConfig);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.length]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
   return (
     <View style={StyleSheet.absoluteFillObject}>
       <Animated.View style={[styles.backdrop, backdropStyles]} />
-      {data.map((item, i) => {
-        return (
-          <LightImageItem
-            key={keyExtractor ? keyExtractor(item, i) : i}
-            currentIndex={currentIndex}
-            {...rest}
-          />
-        );
-      })}
+      <Animated.View style={[styles.view, animatedStyle]}>
+        {data.map((item, i) => {
+          const isFirst = i === 0;
+          const marginLeft = isFirst ? 0 : emptySpaceWidth;
+          const zIndex = index === i ? 1 : 0;
+          const outOfLoopRenderRange =
+            !isLoop ||
+            (Math.abs(i - index) < data.length - (numToRender - 1) / 2 &&
+              Math.abs(i - index) > (numToRender - 1) / 2);
+          const hidden =
+            Math.abs(i - index) > (numToRender - 1) / 2 && outOfLoopRenderRange;
+
+          return (
+            <View
+              key={keyExtractor ? keyExtractor(item, i) : i}
+              style={[
+                dimensions,
+                {
+                  marginLeft,
+                  zIndex,
+                },
+              ]}>
+              {hidden ? null : (
+                <LightImageItem
+                  {...{
+                    translateX,
+                    item,
+                    currentIndex,
+                    index: i,
+                    renderItem,
+                    isFirst,
+                    isLast: i === data.length - 1,
+                    length: data.length,
+                    emptySpaceWidth,
+                    loop: isLoop,
+                    doubleTapInterval,
+                    doubleTapScale,
+                    maxScale,
+                    pinchEnabled,
+                    disableTransitionOnScaledImage,
+                    hideAdjacentImagesOnScaledImage,
+                    disableVerticalSwipe,
+                    disableSwipeUp,
+                    setRef,
+                    ...rest,
+                    ...dimensions,
+                  }}
+                />
+              )}
+            </View>
+          );
+        })}
+      </Animated.View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: 0,
-    backgroundColor: '#fff',
-  },
-
-  scrollContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'black',
+  },
+  view: {
+    flex: 1,
+    flexDirection: 'row',
   },
 });

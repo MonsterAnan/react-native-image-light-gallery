@@ -29,7 +29,13 @@ const _App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="home" component={Home} />
+        <Stack.Screen
+          name="home"
+          options={{
+            headerShown: false,
+          }}
+          component={Home}
+        />
         <Stack.Screen name="lightbox" component={Example} />
         <Stack.Screen name="example2" component={Example2} />
         <Stack.Screen
